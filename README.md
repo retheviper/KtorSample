@@ -2,7 +2,7 @@
 
 ## TL;DR
 
-A simple sample of Rest API by Ktor.
+A simple sample of Rest API by [Ktor](https://ktor.io).
 
 This is another implementation version of [Spring Boot Sample](https://github.com/retheviper/springbootsample).
 
