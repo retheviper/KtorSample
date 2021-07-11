@@ -26,7 +26,10 @@ dependencies {
     implementation("io.ktor:ktor-serialization:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
+        exclude("junit", "junit")
+    }
+    testImplementation(kotlin("test"))
 
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
@@ -35,4 +38,10 @@ dependencies {
     implementation("com.h2database:h2:1.4.199")
 
     implementation("com.ToxicBakery.library.bcrypt:bcrypt:+")
+}
+
+tasks {
+    test {
+        useJUnitPlatform()
+    }
 }
