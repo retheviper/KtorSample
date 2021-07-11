@@ -77,7 +77,7 @@ fun Route.members() {
                     it[enabled] = true
                     it[createdBy] = body.userId
                     it[createdDate] = LocalDateTime.now()
-                    it[lastModifieddBy] = body.userId
+                    it[lastModifiedBy] = body.userId
                     it[lastModifiedDate] = LocalDateTime.now()
                     it[deleted] = false
                 }.let {
