@@ -1,7 +1,7 @@
-package com.retheviper.domain.table
+package com.retheviper.infrastructure.table
 
-import com.retheviper.domain.table.audit.Audit
-import com.retheviper.route.member.model.dto.MemberDto
+import com.retheviper.infrastructure.table.audit.Audit
+import com.retheviper.domain.dto.MemberDto
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.ResultRow
 
@@ -15,6 +15,9 @@ object Member : Audit() {
     val credentialsNonExpired: Column<Boolean> = bool("credentials_non_expired")
     val enabled: Column<Boolean> = bool("enabled")
 
+    /**
+     * Map query result to DTO.
+     */
     fun toDto(row: ResultRow): MemberDto =
         MemberDto(
             id = row[id].value,

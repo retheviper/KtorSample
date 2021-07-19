@@ -17,9 +17,10 @@ In Construction!
 ## Architecture
 
 - `common`: common utils, constants
-- `domain`: tables
-- `plugins`: db, routing, security, serialization configurations
-- `route`: routers, data models
+- `domain`: dtos
+- `infrastructure`: repositories, tables
+- `plugins`: plugins and settings for db, routing, security, serialization
+- `route`: router/handler functions, data models (request/response)
 
 ## Test APIs
 

@@ -1,4 +1,4 @@
-package com.retheviper.domain.table.audit
+package com.retheviper.infrastructure.table.audit
 
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column

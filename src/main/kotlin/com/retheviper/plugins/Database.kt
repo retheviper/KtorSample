@@ -1,6 +1,6 @@
 package com.retheviper.plugins
 
-import com.retheviper.domain.table.Member
+import com.retheviper.infrastructure.table.Member
 import io.ktor.application.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils

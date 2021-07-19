@@ -11,6 +11,9 @@ import io.ktor.request.*
 fun Application.configureRouting() {
 
     routing {
+        get("/") {
+            call.respond("Hello, Ktor!")
+        }
         get(Constants.API_BASE_PATH) {
             call.respond("Hello, Ktor!")
         }
