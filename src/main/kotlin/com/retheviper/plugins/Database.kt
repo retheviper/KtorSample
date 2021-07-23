@@ -1,6 +1,7 @@
 package com.retheviper.plugins
 
 import com.retheviper.infrastructure.table.Member
+import com.retheviper.infrastructure.table.MemberRole
 import io.ktor.application.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -15,7 +16,7 @@ fun Application.configureDatabase() {
 
     transaction {
         SchemaUtils.create(
-            Member
+            Member, MemberRole
         )
     }
 }
