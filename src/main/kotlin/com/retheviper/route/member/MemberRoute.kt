@@ -3,6 +3,7 @@ package com.retheviper.route.member
 import com.retheviper.common.constant.Constants
 import com.retheviper.common.extension.hash
 import com.retheviper.common.extension.verifyWith
+import com.retheviper.common.role.Role
 import com.retheviper.domain.dto.MemberDto
 import com.retheviper.infrastructure.repository.member.MemberRepository
 import com.retheviper.route.member.model.request.MemberUpsertForm
@@ -47,7 +48,7 @@ fun Route.members() {
      */
     post(path) {
         val body = call.receive<MemberUpsertForm>()
-        val result = MemberRepository.create(body.toDto())
+        val result = MemberRepository.create(body.toDto(listOf(Role.USER)))
 
         result?.let {
             call.respond(MemberResponse.from(it))

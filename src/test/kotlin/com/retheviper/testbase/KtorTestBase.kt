@@ -11,7 +11,7 @@ import kotlinx.serialization.json.Json
 
 open class KtorTestBase {
 
-    var id = 1
+    var id = 2
 
     val testUserId = "testUserId"
 
@@ -25,6 +25,9 @@ open class KtorTestBase {
 
     val testLoginPassword = "testLoginPassword"
 
+    /**
+     * Run test without security settings.
+     */
     fun runTest(handle: TestApplicationEngine.() -> Unit) {
         withTestApplication({
             configureRouting()
@@ -35,6 +38,9 @@ open class KtorTestBase {
         }
     }
 
+    /**
+     * Run test with security settings.
+     */
     fun runTestWithSecurity(handle: TestApplicationEngine.() -> Unit) {
         withTestApplication({
             configureRouting()
@@ -46,6 +52,9 @@ open class KtorTestBase {
         }
     }
 
+    /**
+     * Create JSON request body.
+     */
     inline fun <reified T> TestApplicationRequest.requestBody(body: T) {
         addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
         setBody(

@@ -1,6 +1,7 @@
 package com.retheviper.route
 
 import com.retheviper.common.constant.Constants
+import com.retheviper.common.constant.Headers
 import com.retheviper.route.auth.request.MemberCredentialForm
 import com.retheviper.route.member.model.request.MemberUpsertForm
 import com.retheviper.testbase.KtorTestBase
@@ -47,7 +48,9 @@ class AuthRouteTest : KtorTestBase() {
                     actual = response.status(),
                     expected = HttpStatusCode.OK
                 )
-                assertNotNull(response.headers["X-Auth-Token"])
+                assertNotNull(
+                    actual = response.headers[Headers.TOKEN]
+                )
             }
         }
     }

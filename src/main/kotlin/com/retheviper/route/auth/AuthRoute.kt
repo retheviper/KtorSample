@@ -1,6 +1,7 @@
 package com.retheviper.route.auth
 
 import com.retheviper.common.constant.Constants
+import com.retheviper.common.constant.Headers
 import com.retheviper.infrastructure.repository.member.MemberPrincipalRepository
 import com.retheviper.plugins.JwtConfig
 import com.retheviper.route.auth.request.MemberCredentialForm
@@ -32,7 +33,7 @@ fun Route.auth() {
         else
             JwtConfig.makeToken(user).let {
                 call.response.headers.append(
-                    name = "X-Auth-Token",
+                    name = Headers.TOKEN,
                     value = it
                 )
                 call.respond(HttpStatusCode.OK)

@@ -1,5 +1,8 @@
 package com.retheviper.plugins
 
+import com.retheviper.common.role.Role
+import com.retheviper.domain.dto.MemberDto
+import com.retheviper.infrastructure.repository.member.MemberRepository
 import com.retheviper.infrastructure.table.Member
 import com.retheviper.infrastructure.table.MemberRole
 import io.ktor.application.*
@@ -18,5 +21,17 @@ fun Application.configureDatabase() {
         SchemaUtils.create(
             Member, MemberRole
         )
+        createAdmin()
     }
+}
+
+fun createAdmin() {
+    MemberRepository.create(
+        MemberDto(
+            userId = "admin",
+            name = "admin",
+            password = "1234",
+            role = listOf(Role.ADMIN)
+        )
+    )
 }

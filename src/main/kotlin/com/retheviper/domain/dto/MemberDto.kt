@@ -1,5 +1,7 @@
 package com.retheviper.domain.dto
 
+import com.retheviper.common.role.Role
+
 data class MemberDto(
     val id: Int? = null,
     val userId: String,
@@ -11,5 +13,6 @@ data class MemberDto(
     val accountNonLocked: Boolean? = true,
     val credentialsNonExpired: Boolean? = true,
     val enabled: Boolean? = true,
-    val deleted: Boolean? = false
+    val deleted: Boolean? = false,
+    val role: List<Role> = emptyList()
 )

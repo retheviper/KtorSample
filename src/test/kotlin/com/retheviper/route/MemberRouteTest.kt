@@ -6,12 +6,14 @@ import com.retheviper.route.member.model.response.MemberResponse
 import com.retheviper.testbase.KtorTestBase
 import io.ktor.http.*
 import io.ktor.server.testing.*
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.TestMethodOrder
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
@@ -28,17 +30,13 @@ class MemberRouteTest : KtorTestBase() {
                     actual = response.status(),
                     expected = HttpStatusCode.OK
                 )
-                assertEquals(
-                    actual = response.content,
-                    expected = Json.encodeToString(
-                        listOf(
-                            MemberResponse(
-                                id = id,
-                                userId = testUserId.reversed(),
-                                name = testName.reversed()
-                            )
-                        )
-                    ),
+                assertContains(
+                    array = Json.decodeFromString(checkNotNull(response.content)),
+                    element = MemberResponse(
+                        id = id,
+                        userId = testUserId.reversed(),
+                        name = testName.reversed()
+                    )
                 )
             }
         }

@@ -51,14 +51,16 @@ object MemberRepository {
                     }.firstOrNull()
                         ?.let(Member::toDto)
                         ?.also { member ->
-                            MemberRole.insert {
-                                it[memberId] = member.id
-                                it[role] = Role.USER.value
-                                it[createdBy] = dto.userId
-                                it[createdDate] = LocalDateTime.now()
-                                it[lastModifiedBy] = dto.userId
-                                it[lastModifiedDate] = LocalDateTime.now()
-                                it[deleted] = false
+                            member.role.forEach { memberRole ->
+                                MemberRole.insert {
+                                    it[memberId] = member.id
+                                    it[role] = memberRole.value
+                                    it[createdBy] = dto.userId
+                                    it[createdDate] = LocalDateTime.now()
+                                    it[lastModifiedBy] = dto.userId
+                                    it[lastModifiedDate] = LocalDateTime.now()
+                                    it[deleted] = false
+                                }
                             }
                         }
                 }

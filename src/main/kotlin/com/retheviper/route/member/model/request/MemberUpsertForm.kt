@@ -1,5 +1,6 @@
 package com.retheviper.route.member.model.request
 
+import com.retheviper.common.role.Role
 import com.retheviper.domain.dto.MemberDto
 import kotlinx.serialization.Serializable
 
@@ -48,5 +49,17 @@ data class MemberUpsertForm(
             name = name,
             password = password,
             newPassword = newPassword,
+        )
+
+    /**
+     * Map to DTO with role.
+     */
+    fun toDto(role: List<Role>): MemberDto =
+        MemberDto(
+            userId = userId,
+            name = name,
+            password = password,
+            newPassword = newPassword,
+            role = role
         )
 }
