@@ -1,7 +1,6 @@
 package com.retheviper.infrastructure.repository.member
 
 import com.retheviper.common.extension.hash
-import com.retheviper.common.role.Role
 import com.retheviper.domain.dto.MemberDto
 import com.retheviper.infrastructure.table.Member
 import com.retheviper.infrastructure.table.MemberRole
@@ -12,21 +11,17 @@ import java.time.LocalDateTime
 object MemberRepository {
 
     fun findAll(): List<MemberDto> =
-        transaction {
-            Member.selectAll().map(Member::toDto)
-        }
+        transaction { Member.selectAll().map(Member::toDto) }
 
     fun findOne(id: Int): MemberDto? =
-        findOne { Member.id eq id }
+        transaction { findOne { Member.id eq id } }
 
     fun findOne(userId: String): MemberDto? =
-        findOne { Member.userId eq userId }
+        transaction { findOne { Member.userId eq userId } }
 
     fun create(dto: MemberDto): MemberDto? =
         transaction {
-            val existing = Member.select {
-                (Member.userId eq dto.userId) and (Member.deleted eq false)
-            }.firstOrNull()
+            val existing = findOne { Member.userId eq dto.userId }
 
             if (existing != null)
                 null
@@ -46,10 +41,7 @@ object MemberRepository {
                     it[lastModifiedDate] = LocalDateTime.now()
                     it[deleted] = false
                 }.let {
-                    Member.select {
-                        (Member.id eq it.value) and (Member.deleted eq false)
-                    }.firstOrNull()
-                        ?.let(Member::toDto)
+                    findOne { Member.id eq it.value }
                         ?.also { member ->
                             member.role.forEach { memberRole ->
                                 MemberRole.insert {
@@ -71,19 +63,19 @@ object MemberRepository {
             Member.update({ Member.id eq dto.id }) {
                 it[name] = dto.name
                 it[userId] = dto.userId
+
                 if (dto.newPassword != null) {
                     it[password] = dto.newPassword.hash()
                 }
+
                 if (dto.deleted != null) {
                     it[deleted] = dto.deleted
                 }
             }
         }
 
-    private fun findOne(op: SqlExpressionBuilder.() -> Op<Boolean>): MemberDto? = transaction {
-        Member.select {
-            op(this) and (Member.deleted eq false)
-        }.firstOrNull()
+    private fun findOne(op: SqlExpressionBuilder.() -> Op<Boolean>): MemberDto? =
+        Member.select { op(this) and (Member.deleted eq false) }
+            .firstOrNull()
             ?.let(Member::toDto)
-    }
 }
