@@ -12,19 +12,11 @@ import org.jetbrains.exposed.sql.transactions.transaction
 object MemberPrincipalRepository {
 
     fun find(userId: String): MemberPrincipal? =
-        transaction {
-            Member.select { (Member.userId eq userId) and (Member.deleted eq false) }
-                .firstOrNull()
-                ?.let(Member::toDto)
-                ?.toPrincipal()
-        }
+        transaction { MemberRepository.findOne { Member.userId eq userId }?.toPrincipal() }
 
     fun find(userId: String, password: String): MemberPrincipal? =
         transaction {
-            val existing =
-                Member.select { (Member.userId eq userId) and (Member.deleted eq false) }
-                    .firstOrNull()
-                    ?.let(Member::toDto)
+            val existing = MemberRepository.findOne { Member.userId eq userId }
 
             when {
                 existing == null -> null

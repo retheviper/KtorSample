@@ -74,7 +74,11 @@ object MemberRepository {
             }
         }
 
-    private fun findOne(op: SqlExpressionBuilder.() -> Op<Boolean>): MemberDto? =
+    /**
+     * Query to find Member.
+     * need [transaction].
+     */
+    internal fun findOne(op: SqlExpressionBuilder.() -> Op<Boolean>): MemberDto? =
         Member.select { op(this) and (Member.deleted eq false) }
             .firstOrNull()
             ?.let(Member::toDto)
