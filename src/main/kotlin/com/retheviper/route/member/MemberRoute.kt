@@ -1,6 +1,7 @@
 package com.retheviper.route.member
 
 import com.retheviper.common.constant.Constants
+import com.retheviper.common.extension.hash
 import com.retheviper.common.extension.verifyWith
 import com.retheviper.domain.dto.MemberDto
 import com.retheviper.infrastructure.repository.member.MemberRepository
@@ -105,11 +106,11 @@ fun Route.members() {
     delete("${path}/{id}") {
         val (parameter, existing) = getRequestAndExisting()
 
-        if (!verify(parameter, existing)) {
+        if (!verify(parameter, existing) || parameter.userId != existing?.userId) {
             return@delete
         }
 
-        when (MemberRepository.update(checkNotNull(existing).copy(deleted = true))) {
+        when (MemberRepository.update(existing.copy(deleted = true))) {
             1 -> call.respond(
                 status = HttpStatusCode.OK,
                 message = "${parameter.id} successfully deleted"

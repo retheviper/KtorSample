@@ -70,7 +70,10 @@ object MemberRepository {
                 it[name] = dto.name
                 it[userId] = dto.userId
                 if (dto.newPassword != null) {
-                    it[password] = dto.password.hash()
+                    it[password] = dto.newPassword.hash()
+                }
+                if (dto.deleted != null) {
+                    it[deleted] = dto.deleted
                 }
             }
         }

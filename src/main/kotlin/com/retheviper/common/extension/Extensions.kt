@@ -10,6 +10,7 @@ fun String.hash(): String =
 
 /**
  * Verify string with another.
+ * True means verified.
  */
 fun String.verifyWith(encoded: String): Boolean =
     Bcrypt.verify(this, encoded.encodeToByteArray())

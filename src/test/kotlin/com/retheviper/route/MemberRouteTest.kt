@@ -1,6 +1,7 @@
 package com.retheviper.route
 
 import com.retheviper.common.constant.Constants
+import com.retheviper.domain.dto.MemberDto
 import com.retheviper.route.member.model.request.MemberUpsertForm
 import com.retheviper.route.member.model.response.MemberResponse
 import com.retheviper.testbase.KtorTestBase
@@ -152,7 +153,11 @@ class MemberRouteTest : KtorTestBase() {
                 addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                 setBody(
                     Json.encodeToString(
-                        testPassword.reversed()
+                        MemberUpsertForm(
+                            userId = testUserId.reversed(),
+                            name = testName.reversed(),
+                            password = testPassword.reversed()
+                        )
                     )
                 )
             }) {
