@@ -1,9 +1,10 @@
 package com.retheviper.infrastructure.repository.member
 
-import com.retheviper.common.constant.Constants
+import com.retheviper.common.extension.hash
+import com.retheviper.common.role.Role
 import com.retheviper.domain.dto.MemberDto
 import com.retheviper.infrastructure.table.Member
-import com.toxicbakery.bcrypt.Bcrypt
+import com.retheviper.infrastructure.table.MemberRole
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
@@ -33,7 +34,7 @@ object MemberRepository {
                 Member.insertAndGetId {
                     it[userId] = dto.userId
                     it[name] = dto.name
-                    it[password] = Bcrypt.hash(dto.password, Constants.SALT_AROUND).toString()
+                    it[password] = dto.password.hash()
                     it[memberInformationId] = null
                     it[accountNonExpired] = true
                     it[accountNonLocked] = true
@@ -49,6 +50,17 @@ object MemberRepository {
                         (Member.id eq it.value) and (Member.deleted eq false)
                     }.firstOrNull()
                         ?.let(Member::toDto)
+                        ?.also { member ->
+                            MemberRole.insert {
+                                it[memberId] = member.id
+                                it[role] = Role.USER.value
+                                it[createdBy] = dto.userId
+                                it[createdDate] = LocalDateTime.now()
+                                it[lastModifiedBy] = dto.userId
+                                it[lastModifiedDate] = LocalDateTime.now()
+                                it[deleted] = false
+                            }
+                        }
                 }
         }
 
@@ -58,7 +70,10 @@ object MemberRepository {
                 it[name] = dto.name
                 it[userId] = dto.userId
                 if (dto.newPassword != null) {
-                    it[password] = Bcrypt.hash(dto.newPassword, Constants.SALT_AROUND).toString()
+                    it[password] = dto.newPassword.hash()
+                }
+                if (dto.deleted != null) {
+                    it[deleted] = dto.deleted
                 }
             }
         }

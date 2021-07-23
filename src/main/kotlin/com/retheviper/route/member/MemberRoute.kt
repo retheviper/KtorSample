@@ -1,15 +1,18 @@
 package com.retheviper.route.member
 
 import com.retheviper.common.constant.Constants
+import com.retheviper.common.extension.hash
+import com.retheviper.common.extension.verifyWith
+import com.retheviper.domain.dto.MemberDto
 import com.retheviper.infrastructure.repository.member.MemberRepository
 import com.retheviper.route.member.model.request.MemberUpsertForm
 import com.retheviper.route.member.model.response.MemberResponse
-import com.toxicbakery.bcrypt.Bcrypt
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import io.ktor.util.pipeline.*
 
 fun Route.members() {
 
@@ -44,7 +47,6 @@ fun Route.members() {
      */
     post(path) {
         val body = call.receive<MemberUpsertForm>()
-
         val result = MemberRepository.create(body.toDto())
 
         result?.let {
@@ -59,49 +61,35 @@ fun Route.members() {
      * Update Member
      */
     put("${path}/{id}") {
-        val id = requireNotNull(call.parameters[Constants.ID]).toInt()
-        val body = call.receive<MemberUpsertForm>()
-        val existing = MemberRepository.findOne(id)
+        val (parameter, existing) = getRequestAndExisting()
 
-        if (existing == null) {
-            call.respond(
-                status = HttpStatusCode.NotFound,
-                message = "${body.userId} not exists"
-            )
-            return@put
-        }
-
-        if (Bcrypt.verify(body.password, existing.password.toByteArray())) {
-            call.respond(
-                status = HttpStatusCode.BadRequest,
-                message = "password not matches"
-            )
+        if (!verify(parameter, existing)) {
             return@put
         }
 
         val result =
-            if (body.userId != existing.userId) {
-                val conflict = MemberRepository.findOne(body.userId)
+            if (parameter.userId != checkNotNull(existing).userId) {
+                val conflict = MemberRepository.findOne(parameter.userId)
 
                 if (conflict != null) {
                     call.respond(
                         status = HttpStatusCode.Conflict,
-                        message = "${body.userId} already exists"
+                        message = "${parameter.userId} already exists"
                     )
                     return@put
                 }
 
-                MemberRepository.update(body.toDto(id))
+                MemberRepository.update(parameter)
             } else {
-                MemberRepository.update(body.toDto(id))
+                MemberRepository.update(parameter)
             }
 
         when (result) {
             1 -> call.respond(
                 MemberResponse(
-                    id = id,
-                    name = body.name,
-                    userId = body.userId
+                    id = checkNotNull(parameter.id),
+                    name = parameter.name,
+                    userId = parameter.userId
                 )
             )
 
@@ -116,30 +104,16 @@ fun Route.members() {
      * Delete Member
      */
     delete("${path}/{id}") {
-        val id = requireNotNull(call.parameters[Constants.ID]).toInt()
-        val password = call.receive<String>()
-        val existing = MemberRepository.findOne(id)
+        val (parameter, existing) = getRequestAndExisting()
 
-        if (existing == null) {
-            call.respond(
-                status = HttpStatusCode.NotFound,
-                message = "$id not exists"
-            )
-            return@delete
-        }
-
-        if (Bcrypt.verify(password, existing.password.toByteArray())) {
-            call.respond(
-                status = HttpStatusCode.BadRequest,
-                message = "password not matches"
-            )
+        if (!verify(parameter, existing) || parameter.userId != existing?.userId) {
             return@delete
         }
 
         when (MemberRepository.update(existing.copy(deleted = true))) {
             1 -> call.respond(
                 status = HttpStatusCode.OK,
-                message = "$id successfully deleted"
+                message = "${parameter.id} successfully deleted"
             )
 
             0 -> call.respond(
@@ -149,3 +123,32 @@ fun Route.members() {
         }
     }
 }
+
+private suspend fun PipelineContext<*, ApplicationCall>.getRequestAndExisting(): Pair<MemberDto, MemberDto?> {
+    val id = requireNotNull(call.parameters[Constants.ID]).toInt()
+    val body = call.receive<MemberUpsertForm>()
+    val existing = MemberRepository.findOne(id)
+
+    return body.toDto(id) to existing
+}
+
+private suspend fun PipelineContext<*, ApplicationCall>.verify(parameter: MemberDto, existing: MemberDto?) =
+    when {
+        existing == null -> {
+            call.respond(
+                status = HttpStatusCode.NotFound,
+                message = "${parameter.id} not exists"
+            )
+            false
+        }
+
+        !parameter.password.verifyWith(existing.password) -> {
+            call.respond(
+                status = HttpStatusCode.BadRequest,
+                message = "password not matches"
+            )
+            false
+        }
+
+        else -> true
+    }

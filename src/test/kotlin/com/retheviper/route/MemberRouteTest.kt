@@ -19,14 +19,6 @@ class MemberRouteTest : KtorTestBase() {
 
     private val path = "${Constants.API_BASE_PATH}/members"
 
-    private var id = 1
-
-    private val testUserId = "testUserId"
-
-    private val testName = "testName"
-
-    private val testPassword = "testPassword"
-
     @Test
     @Order(4)
     fun listMember() {
@@ -80,14 +72,11 @@ class MemberRouteTest : KtorTestBase() {
     fun createMember() {
         runTest {
             with(handleRequest(HttpMethod.Post, path) {
-                addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                setBody(
-                    Json.encodeToString(
-                        MemberUpsertForm(
-                            userId = testUserId,
-                            name = testName,
-                            password = testPassword
-                        )
+                requestBody(
+                    MemberUpsertForm(
+                        userId = testUserId,
+                        name = testName,
+                        password = testPassword
                     )
                 )
             }) {
@@ -114,15 +103,12 @@ class MemberRouteTest : KtorTestBase() {
     fun updateMember() {
         runTest {
             with(handleRequest(HttpMethod.Put, "$path/$id") {
-                addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                setBody(
-                    Json.encodeToString(
-                        MemberUpsertForm(
-                            userId = testUserId.reversed(),
-                            name = testName.reversed(),
-                            password = testPassword,
-                            newPassword = testPassword.reversed()
-                        )
+                requestBody(
+                    MemberUpsertForm(
+                        userId = testUserId.reversed(),
+                        name = testName.reversed(),
+                        password = testPassword,
+                        newPassword = testPassword.reversed()
                     )
                 )
             }) {
@@ -149,10 +135,11 @@ class MemberRouteTest : KtorTestBase() {
     fun deleteMember() {
         runTest {
             with(handleRequest(HttpMethod.Delete, "$path/$id") {
-                addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                setBody(
-                    Json.encodeToString(
-                        testPassword.reversed()
+                requestBody(
+                    MemberUpsertForm(
+                        userId = testUserId.reversed(),
+                        name = testName.reversed(),
+                        password = testPassword.reversed()
                     )
                 )
             }) {
