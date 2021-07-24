@@ -14,7 +14,7 @@ fun Application.configureException() {
             when (cause) {
                 is AuthorizationException -> {
                     call.respond(
-                        status = HttpStatusCode.InternalServerError,
+                        status = HttpStatusCode.Forbidden,
                         message = AuthFailedResponse(
                             code = "", // TODO
                             reason = cause.message
