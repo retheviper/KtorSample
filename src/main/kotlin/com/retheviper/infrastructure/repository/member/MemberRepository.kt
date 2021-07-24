@@ -5,7 +5,6 @@ import com.retheviper.common.role.Role
 import com.retheviper.domain.dto.MemberDto
 import com.retheviper.infrastructure.table.Member
 import com.retheviper.infrastructure.table.MemberRole
-import com.retheviper.infrastructure.table.MemberRole.role
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
@@ -13,7 +12,7 @@ import java.time.LocalDateTime
 object MemberRepository {
 
     fun findAll(): List<MemberDto> =
-        transaction { Member.selectAll().map(Member::toDto) }
+        transaction { Member.selectAll().map { Member.toDto(it).withRole() } }
 
     fun findOne(id: Int): MemberDto? =
         transaction { findOne { Member.id eq id } }
@@ -28,7 +27,7 @@ object MemberRepository {
             if (existing != null) {
                 null
             } else {
-                val createdMember = Member.insertAndGetId {
+                val id = Member.insertAndGetId {
                     it[userId] = dto.userId
                     it[name] = dto.name
                     it[password] = dto.password.hash()
@@ -42,28 +41,21 @@ object MemberRepository {
                     it[lastModifiedBy] = dto.userId
                     it[lastModifiedDate] = LocalDateTime.now()
                     it[deleted] = false
-                }.let { findOne { Member.id eq it.value } }
-
-                if (createdMember != null) {
-                    val createdMemberRole = dto.role.map { memberRole ->
-                        MemberRole.insertAndGetId {
-                            it[memberId] = createdMember.id
-                            it[role] = memberRole.value
-                            it[createdBy] = dto.userId
-                            it[createdDate] = LocalDateTime.now()
-                            it[lastModifiedBy] = dto.userId
-                            it[lastModifiedDate] = LocalDateTime.now()
-                            it[deleted] = false
-                        }.let {
-                            val result = MemberRole.select { (MemberRole.id) eq it.value }.first()
-                                Role.valueOf(result[role])
-                        }
-                    }.toSet()
-
-                    createdMember.copy(role = createdMemberRole)
-                } else {
-                    null
                 }
+
+                dto.role.forEach { memberRole ->
+                    MemberRole.insert {
+                        it[memberId] = id
+                        it[role] = memberRole.value
+                        it[createdBy] = dto.userId
+                        it[createdDate] = LocalDateTime.now()
+                        it[lastModifiedBy] = dto.userId
+                        it[lastModifiedDate] = LocalDateTime.now()
+                        it[deleted] = false
+                    }
+                }
+
+                findOne { Member.id eq id }
             }
         }
 
@@ -91,4 +83,15 @@ object MemberRepository {
         Member.select { op(this) and (Member.deleted eq false) }
             .firstOrNull()
             ?.let(Member::toDto)
+            ?.withRole()
+
+    /**
+     * Return DTO with it's role.
+     */
+    private fun MemberDto.withRole(): MemberDto =
+        copy(role = MemberRole
+            .select { (MemberRole.memberId eq id) and (MemberRole.deleted eq false) }
+            .map { Role.valueOf(it[MemberRole.role]) }
+            .toSet()
+        )
 }

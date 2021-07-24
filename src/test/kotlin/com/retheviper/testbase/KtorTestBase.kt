@@ -1,14 +1,15 @@
 package com.retheviper.testbase
 
 import com.retheviper.plugins.*
+import io.kotest.core.spec.style.FreeSpec
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-open class KtorTestBase {
+open class KtorTestBase : FreeSpec() {
 
-    var id = 2
+    var id = 3
 
     val testUserId = "testUserId"
 

@@ -2,6 +2,7 @@ val ktorVersion: String by project
 val kotlinVersion: String by project
 val logbackVersion: String by project
 val exposedVersion: String by project
+val kotestVersion: String by project
 
 plugins {
     application
@@ -33,7 +34,7 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude("junit", "junit")
     }
-    testImplementation(kotlin("test"))
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
 
     // Exposed
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")

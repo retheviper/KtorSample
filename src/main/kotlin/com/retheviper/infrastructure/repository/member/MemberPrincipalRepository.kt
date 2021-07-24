@@ -1,13 +1,9 @@
 package com.retheviper.infrastructure.repository.member
 
 import com.retheviper.common.extension.verifyWith
-import com.retheviper.common.role.Role
 import com.retheviper.domain.dto.MemberDto
 import com.retheviper.domain.dto.MemberPrincipal
 import com.retheviper.infrastructure.table.Member
-import com.retheviper.infrastructure.table.MemberRole
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object MemberPrincipalRepository {
@@ -28,18 +24,11 @@ object MemberPrincipalRepository {
             }
         }
 
-    private fun MemberDto.toPrincipal(): MemberPrincipal {
-        val memberId = checkNotNull(id)
-
-        val role =
-            MemberRole.select { (MemberRole.memberId eq memberId) and (MemberRole.deleted eq false) }
-                .mapTo(HashSet()) { it[MemberRole.role] }
-
-        return MemberPrincipal(
-            id = memberId,
+    private fun MemberDto.toPrincipal(): MemberPrincipal =
+        MemberPrincipal(
+            id = checkNotNull(id),
             username = userId,
             name = name,
-            roles = role.map { Role.valueOf(it) }.toSet(),
+            roles = role
         )
-    }
 }

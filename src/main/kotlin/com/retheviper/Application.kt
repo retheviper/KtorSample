@@ -11,5 +11,6 @@ fun main() {
         configureRouting()
         configureSerialization()
         configureException()
+        configureLogging()
     }.start(wait = true)
 }

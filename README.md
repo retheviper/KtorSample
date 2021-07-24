@@ -13,6 +13,7 @@ In Construction!
 - [Gradle](https://gradle.org) (Kotlin DSL)
 - [Exposed](https://github.com/JetBrains/Exposed)
 - [Kotlin serialization](https://github.com/Kotlin/kotlinx.serialization)
+- [Kotest](https://kotest.io)
 
 ## Architecture
 
