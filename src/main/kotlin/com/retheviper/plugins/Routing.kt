@@ -2,8 +2,8 @@ package com.retheviper.plugins
 
 import com.retheviper.common.constant.Constants
 import com.retheviper.domain.dto.MemberPrincipal
-import com.retheviper.route.auth.auth
-import com.retheviper.route.member.members
+import com.retheviper.application.route.auth.auth
+import com.retheviper.application.route.member.members
 import io.ktor.routing.*
 import io.ktor.http.*
 import io.ktor.application.*

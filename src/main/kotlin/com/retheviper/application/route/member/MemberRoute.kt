@@ -1,4 +1,4 @@
-package com.retheviper.route.member
+package com.retheviper.application.route.member
 
 import com.retheviper.common.constant.Constants
 import com.retheviper.common.extension.hash
@@ -6,8 +6,8 @@ import com.retheviper.common.extension.verifyWith
 import com.retheviper.common.role.Role
 import com.retheviper.domain.dto.MemberDto
 import com.retheviper.infrastructure.repository.member.MemberRepository
-import com.retheviper.route.member.model.request.MemberUpsertForm
-import com.retheviper.route.member.model.response.MemberResponse
+import com.retheviper.application.route.member.model.request.MemberUpsertForm
+import com.retheviper.application.route.member.model.response.MemberResponse
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
@@ -48,7 +48,7 @@ fun Route.members() {
      */
     post(path) {
         val body = call.receive<MemberUpsertForm>()
-        val result = MemberRepository.create(body.toDto(listOf(Role.USER)))
+        val result = MemberRepository.create(body.toDto(setOf(Role.USER)))
 
         result?.let {
             call.respond(MemberResponse.from(it))

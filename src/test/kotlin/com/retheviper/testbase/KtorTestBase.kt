@@ -1,9 +1,6 @@
 package com.retheviper.testbase
 
-import com.retheviper.plugins.configureDatabase
-import com.retheviper.plugins.configureRouting
-import com.retheviper.plugins.configureSecurity
-import com.retheviper.plugins.configureSerialization
+import com.retheviper.plugins.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlinx.serialization.encodeToString
@@ -26,27 +23,15 @@ open class KtorTestBase {
     val testLoginPassword = "testLoginPassword"
 
     /**
-     * Run test without security settings.
+     * Run test.
      */
     fun runTest(handle: TestApplicationEngine.() -> Unit) {
         withTestApplication({
-            configureRouting()
-            configureDatabase()
-            configureSerialization()
-        }) {
-            handle(this)
-        }
-    }
-
-    /**
-     * Run test with security settings.
-     */
-    fun runTestWithSecurity(handle: TestApplicationEngine.() -> Unit) {
-        withTestApplication({
-            configureRouting()
             configureDatabase()
             configureSecurity()
+            configureRouting()
             configureSerialization()
+            configureException()
         }) {
             handle(this)
         }

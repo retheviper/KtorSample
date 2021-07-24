@@ -1,8 +1,8 @@
 package com.retheviper.route
 
 import com.retheviper.common.constant.Constants
-import com.retheviper.route.member.model.request.MemberUpsertForm
-import com.retheviper.route.member.model.response.MemberResponse
+import com.retheviper.application.route.member.model.request.MemberUpsertForm
+import com.retheviper.application.route.member.model.response.MemberResponse
 import com.retheviper.testbase.KtorTestBase
 import io.ktor.http.*
 import io.ktor.server.testing.*

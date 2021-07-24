@@ -1,4 +1,4 @@
-package com.retheviper.route.member.model.response
+package com.retheviper.application.route.member.model.response
 
 import com.retheviper.domain.dto.MemberDto
 import kotlinx.serialization.Serializable

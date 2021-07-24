@@ -1,4 +1,4 @@
-package com.retheviper.route.auth.request
+package com.retheviper.application.route.auth.model.request
 
 import kotlinx.serialization.Serializable
 

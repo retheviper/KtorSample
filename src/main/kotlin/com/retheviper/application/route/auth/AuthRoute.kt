@@ -1,11 +1,15 @@
-package com.retheviper.route.auth
+package com.retheviper.application.route.auth
 
+import com.retheviper.application.configuration.security.JwtConfig
+import com.retheviper.application.route.auth.model.request.MemberCredentialForm
 import com.retheviper.common.constant.Constants
 import com.retheviper.common.constant.Headers
+import com.retheviper.common.extension.withRole
+import com.retheviper.common.role.Role
+import com.retheviper.domain.dto.MemberPrincipal
 import com.retheviper.infrastructure.repository.member.MemberPrincipalRepository
-import com.retheviper.plugins.JwtConfig
-import com.retheviper.route.auth.request.MemberCredentialForm
 import io.ktor.application.*
+import io.ktor.auth.*
 import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -34,9 +38,28 @@ fun Route.auth() {
             JwtConfig.makeToken(user).let {
                 call.response.headers.append(
                     name = Headers.TOKEN,
-                    value = it
+                    value = "Bearer $it"
                 )
-                call.respond(HttpStatusCode.OK)
+                call.response.status(HttpStatusCode.OK)
             }
+    }
+
+    /**
+     * Test endpoint
+     */
+    authenticate("auth-jwt") {
+        withRole(Role.USER) {
+            get("$path/user") {
+                val principal = call.principal<MemberPrincipal>()
+                call.respond("${principal?.username}, you are USER!")
+            }
+        }
+
+        withRole(Role.ADMIN) {
+            get("$path/admin") {
+                val principal = call.principal<MemberPrincipal>()
+                call.respond("${principal?.username}, you are ADMIN!")
+            }
+        }
     }
 }

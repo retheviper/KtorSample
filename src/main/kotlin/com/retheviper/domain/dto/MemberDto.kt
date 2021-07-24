@@ -14,5 +14,5 @@ data class MemberDto(
     val credentialsNonExpired: Boolean? = true,
     val enabled: Boolean? = true,
     val deleted: Boolean? = false,
-    val role: List<Role> = emptyList()
+    val role: Set<Role> = emptySet()
 )

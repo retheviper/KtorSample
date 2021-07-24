@@ -2,8 +2,8 @@ package com.retheviper.route
 
 import com.retheviper.common.constant.Constants
 import com.retheviper.common.constant.Headers
-import com.retheviper.route.auth.request.MemberCredentialForm
-import com.retheviper.route.member.model.request.MemberUpsertForm
+import com.retheviper.application.route.auth.model.request.MemberCredentialForm
+import com.retheviper.application.route.member.model.request.MemberUpsertForm
 import com.retheviper.testbase.KtorTestBase
 import io.ktor.http.*
 import io.ktor.server.testing.*
@@ -35,7 +35,7 @@ class AuthRouteTest : KtorTestBase() {
 
     @Test
     fun login() {
-        runTestWithSecurity {
+        runTest {
             with(handleRequest(HttpMethod.Post, "$path/login") {
                 requestBody(
                     MemberCredentialForm(

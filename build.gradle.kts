@@ -44,6 +44,10 @@ dependencies {
 
     // Encryption
     implementation("com.ToxicBakery.library.bcrypt:bcrypt:+")
+
+    // Logger
+    implementation("io.github.microutils:kotlin-logging:1.12.5")
+
 }
 
 tasks {

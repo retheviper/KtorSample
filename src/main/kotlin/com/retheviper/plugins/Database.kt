@@ -31,7 +31,7 @@ fun createAdmin() {
             userId = "admin",
             name = "admin",
             password = "1234",
-            role = listOf(Role.ADMIN)
+            role = setOf(Role.ADMIN)
         )
     )
 }

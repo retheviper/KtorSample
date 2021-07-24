@@ -4,13 +4,12 @@ import com.retheviper.infrastructure.table.audit.Audit
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.ReferenceOption
-import org.jetbrains.exposed.sql.ResultRow
 
-object MemberRole : Audit() {
+object MemberInformation : Audit() {
     val memberId: Column<EntityID<Int>> = reference(
         name = "member_id",
         foreign = Member,
         onDelete = ReferenceOption.CASCADE
     )
-    val role: Column<String> = varchar(name = "role", length = 255)
+    val email: Column<String> = varchar(name = "email", length = 255)
 }

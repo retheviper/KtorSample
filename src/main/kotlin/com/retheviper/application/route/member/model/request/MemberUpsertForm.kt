@@ -1,4 +1,4 @@
-package com.retheviper.route.member.model.request
+package com.retheviper.application.route.member.model.request
 
 import com.retheviper.common.role.Role
 import com.retheviper.domain.dto.MemberDto
@@ -54,7 +54,7 @@ data class MemberUpsertForm(
     /**
      * Map to DTO with role.
      */
-    fun toDto(role: List<Role>): MemberDto =
+    fun toDto(role: Set<Role>): MemberDto =
         MemberDto(
             userId = userId,
             name = name,

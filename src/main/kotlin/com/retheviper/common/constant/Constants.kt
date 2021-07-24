@@ -9,5 +9,5 @@ object Constants {
 
 object Headers {
 
-    const val TOKEN = "X-AUTH-TOKEN"
+    const val TOKEN = "Authorization"
 }

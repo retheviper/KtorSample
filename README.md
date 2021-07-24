@@ -16,11 +16,11 @@ In Construction!
 
 ## Architecture
 
+- `application`: router/handler functions, data models (request/response), configurations
 - `common`: common utils, constants
 - `domain`: dtos
 - `infrastructure`: repositories, tables
 - `plugins`: plugins and settings for db, routing, security, serialization
-- `route`: router/handler functions, data models (request/response)
 
 ## Test APIs
 
@@ -38,4 +38,4 @@ In Construction!
 
 3. Test with Postman.
 
-Note: Some APIs need JWT on HTTP Request Header(`X-AUTH-TOKEN`) and it will be found at HTTP Response Header when successfully logged in.
+Note: Some APIs need JWT on HTTP Request Header(`Authorization: Bearer xxx`) and it will be found at HTTP Response Header when successfully logged in.

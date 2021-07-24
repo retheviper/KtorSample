@@ -1,6 +1,7 @@
 package com.retheviper.infrastructure.repository.member
 
 import com.retheviper.common.extension.verifyWith
+import com.retheviper.common.role.Role
 import com.retheviper.domain.dto.MemberDto
 import com.retheviper.domain.dto.MemberPrincipal
 import com.retheviper.infrastructure.table.Member
@@ -38,7 +39,7 @@ object MemberPrincipalRepository {
             id = memberId,
             username = userId,
             name = name,
-            roles = role,
+            roles = role.map { Role.valueOf(it) }.toSet(),
         )
     }
 }
