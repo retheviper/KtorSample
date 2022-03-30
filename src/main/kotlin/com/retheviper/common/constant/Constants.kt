@@ -11,3 +11,8 @@ object Headers {
 
     const val TOKEN = "Authorization"
 }
+
+object Authrorizer {
+
+    const val JWT = "auth-jwt"
+}

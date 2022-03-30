@@ -79,5 +79,11 @@ class MemberRepositoryTest : KtorTestBase() {
             val actual = MemberRepository.findOne(updatedDto.userId)
             actual shouldBe null
         }
+
+        "findOneV2(userId)" {
+            val actual = MemberRepository.findOneV2(1)[0]
+            actual.userId shouldBe "admin"
+            actual.role shouldBe setOf(Role.ADMIN, Role.USER)
+        }
     }
 }

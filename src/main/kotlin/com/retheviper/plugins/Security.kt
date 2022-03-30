@@ -2,6 +2,7 @@ package com.retheviper.plugins
 
 import com.retheviper.application.configuration.security.JwtConfig
 import com.retheviper.application.configuration.security.RoleBasedAuthorization
+import com.retheviper.common.constant.Authrorizer
 import com.retheviper.domain.dto.MemberPrincipal
 import com.retheviper.infrastructure.repository.member.MemberPrincipalRepository
 import io.ktor.application.*
@@ -11,7 +12,7 @@ import io.ktor.auth.jwt.*
 fun Application.configureSecurity() {
 
     install(Authentication) {
-        jwt("auth-jwt") {
+        jwt(Authrorizer.JWT) {
             verifier(
                 JwtConfig.verifier
             )

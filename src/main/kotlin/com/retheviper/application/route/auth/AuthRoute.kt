@@ -2,6 +2,7 @@ package com.retheviper.application.route.auth
 
 import com.retheviper.application.configuration.security.JwtConfig
 import com.retheviper.application.route.auth.model.request.MemberCredentialForm
+import com.retheviper.common.constant.Authrorizer
 import com.retheviper.common.constant.Constants
 import com.retheviper.common.constant.Headers
 import com.retheviper.common.extension.withRole
@@ -47,7 +48,7 @@ fun Route.auth() {
     /**
      * Test endpoint
      */
-    authenticate("auth-jwt") {
+    authenticate(Authrorizer.JWT) {
         withRole(Role.USER) {
             get("$path/user") {
                 val principal = call.principal<MemberPrincipal>()

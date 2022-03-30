@@ -86,7 +86,7 @@ object MemberRepository {
             ?.withRole()
 
     /**
-     * Return DTO with it's role.
+     * Return DTO with its role.
      */
     private fun MemberDto.withRole(): MemberDto =
         copy(role = MemberRole
@@ -94,4 +94,31 @@ object MemberRepository {
             .map { Role.valueOf(it[MemberRole.role]) }
             .toSet()
         )
+
+    val map = mutableMapOf<Int, MemberDto>()
+
+    fun findOneV2(id: Int) =
+        transaction {
+            Member.leftJoin(MemberRole)
+                .select {
+                    ((Member.id eq id) and (Member.deleted eq false)) and
+                            ((MemberRole.memberId eq Member.id) and (MemberRole.deleted eq false))
+                }
+                .groupBy({
+                    MemberDto(
+                        id = it[Member.id].value,
+                        userId = it[Member.userId],
+                        name = it[Member.name],
+                        password = it[Member.password],
+                        memberInformationId = it[Member.memberInformationId],
+                        accountNonExpired = it[Member.accountNonExpired],
+                        accountNonLocked = it[Member.accountNonLocked],
+                        credentialsNonExpired = it[Member.credentialsNonExpired],
+                        enabled = it[Member.enabled],
+                    )
+                }, { it[MemberRole.role] })
+                .map { (key, value) ->
+                    key.copy(role = value.map { Role.valueOf(it) }.toSet())
+                }
+        }
 }

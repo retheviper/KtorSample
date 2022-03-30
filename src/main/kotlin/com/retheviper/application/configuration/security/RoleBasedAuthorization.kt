@@ -6,6 +6,7 @@ import com.retheviper.domain.dto.MemberPrincipal
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.request.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
